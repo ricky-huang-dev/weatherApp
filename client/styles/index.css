@@ -145,11 +145,6 @@ body {
   background: rgba(71, 130, 169, 1);
 }
 
-/*homepage css */
-.image-container {
-  background-image: url();
-}
-
 /* Samir */
 
 /* The hero image */
@@ -183,4 +178,9 @@ body {
   color: white;
   padding: 20px;
   font-size: 1.5rem;
+}
+
+.weather-icon img {
+  height: 100px;
+  width: 100px;
 }

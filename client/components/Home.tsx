@@ -1,6 +1,7 @@
+import { useQuery } from '@tanstack/react-query'
 import weatherapi from '../apis/weatherapi.ts'
-import { getAllLocations } from '../../server/db/db.ts'
 import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 export default function Home() {
   const [defaultLocation, setDefaultLocation] = useState({
@@ -12,41 +13,63 @@ export default function Home() {
       'https://a.cdn-hotels.com/gdcs/production133/d294/4e4195aa-b9ca-42cd-923f-e8a65c8c5c7b.jpg',
   })
 
-  useEffect(() => {
-    getWeatherData
-  }, [])
+  let num = 1
+
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ['weatherData'],
+    queryFn: getWeatherData,
+  })
+
+  if (isError) {
+    return <p>There is an error sorry!</p>
+  }
+
+  if (isLoading) {
+    return <p>Your page is loading...</p>
+  }
 
   async function getWeatherData() {
     const weatherData = await weatherapi(
       defaultLocation.latitude,
       defaultLocation.longitude,
     )
+    console.log(weatherData)
     return weatherData
   }
-  getWeatherData()
+  if (data.temperature2m > 28) {
+    num = 6
+  }
+  if (data.temperature2m < 5) {
+    num = 5
+  }
+  if (data.cloudCover > 10) {
+    num = 2
+  }
+  if (data.rain > 0) {
+    num = 3
+  }
+  if (data.snowfall > 0) {
+    num = 4
+  }
 
-  // console.log(weatherData)
   return (
     <>
-      {/* <h1>Home Page</h1> */}
       <div key={defaultLocation.city} className="hero-image">
         <img src={defaultLocation.imageURL} alt={defaultLocation.city} />
         <div className="hero-text">
           <h1>{defaultLocation.city}</h1>
-          <p>Sunny 21c</p>
-          {/* <button>Hire me</button> */}
+          <div className="image-container">
+            <div className="weather-icon">
+              <h2>{data.temperature2m?.toFixed(0)}°C</h2>
+              <img
+                className="icon"
+                src={`/client/public/images/icon${num}.png`}
+                alt={'the sun'}
+              ></img>
+            </div>
+          </div>
         </div>
       </div>
-      {/* <div className="image-container">
-        <div className="weather-icon">
-          <img
-            src={
-              'https://about.metservice.com/assets/img/icon-exp/_resampled/resizedimage5555-ic-condition-fine-tiny-2.png'
-            }
-            alt={'the sun'}
-          ></img>
-        </div>
-      </div> */}
     </>
   )
 }

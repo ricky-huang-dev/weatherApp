@@ -1,13 +1,7 @@
 import { fetchWeatherApi } from 'openmeteo'
 import { Location } from '../../models/location'
+import { Weather } from '../../models/location.ts'
 
-interface Weather {
-  time: Date
-  temperature2m: number | undefined
-  rain: number | undefined
-  snowfall: number | undefined
-  cloudCover: number | undefined
-}
 export default async function weatherapi(
   lat: number,
   long: number,
